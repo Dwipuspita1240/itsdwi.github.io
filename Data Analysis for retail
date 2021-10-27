@@ -1,1 +1,82 @@
+#Overall Performance by Year
 
+SELECT
+    YEAR(order_date) AS tahun,
+    ROUND(SUM(sales), 2) AS total,
+    COUNT(order_id) AS jumlah
+FROM
+    sales_store
+WHERE
+    order_status = 'Order Finished'
+GROUP BY
+    tahun;
+
+#Overall Performance by Product Sub Category
+
+SELECT
+    YEAR(order_date) AS tahun,
+    sub_category,
+    SUM(sales) AS total
+FROM
+    sales_store
+WHERE
+    YEAR(order_date) BETWEEN 2016
+    AND 2018
+    AND order_status LIKE 'Order Finished'
+GROUP BY
+    tahun,
+    sub_category
+ORDER BY
+    tahun,
+    sales DESC;
+
+#Promotion Effectiveness and Efficiency by Years
+SELECT
+    YEAR(order_date) AS years,
+    SUM(sales) AS sales,
+    SUM(discount) AS promotion_value,
+    ROUND(SUM(discount) / SUM(sales) * 100, 2) as burn_rate_percentage
+FROM
+    sales_store
+WHERE
+    YEAR(order_date) BETWEEN 2016
+    AND 2018
+    AND order_status LIKE 'Order Finished'
+GROUP BY
+    years
+ORDER BY
+    years;
+
+#Promotion Effectiveness and Efficiency by Product Sub Category
+
+SELECT
+    YEAR(order_date) AS years,
+    sub_category,
+    category,
+    SUM(sales) AS sales,
+    SUM(discount) AS promotion_value,
+    ROUND(SUM(discount) / SUM(sales) * 100, 2) as burn_rate_percentage
+FROM
+    sales_store
+WHERE
+    YEAR(order_date) = 2018
+    AND order_status LIKE 'Order Finished'
+GROUP BY
+    years,
+    sub_category,
+    category
+ORDER BY
+    sales DESC;
+
+#Customers Transactions per Year
+SELECT
+    YEAR(order_date) AS years,
+    COUNT(DISTINCT customer) AS number_of_customer
+FROM
+    sales_store
+WHERE
+    YEAR(order_date) BETWEEN 2016
+    AND 2018
+    AND order_status LIKE 'Order Finished'
+GROUP BY
+    years;
