@@ -1,0 +1,115 @@
+# 10 transaksi terbesar user 1000
+SELECT
+    user_id,
+    total,
+    order_date  
+FROM
+    order_detail
+WHERE
+    user_id = 1000
+ORDER BY
+    3 DESC
+LIMIT 10;
+
+# Transaksi per bulan
+SELECT
+    EXTRACT(
+        YEAR_MONTH
+        FROM
+            order_date
+    ) AS year_month,
+    COUNT(1) AS number_of_order,
+    SUM(total) AS sales
+FROM
+    order_detail
+WHERE
+    order_date >= '2011-01-01'
+GROUP BY
+    1
+ORDER BY
+    1;
+
+#Pengguna dengan rata-rata transaksi terbesar di Juni 2011
+SELECT
+    user_id,
+    COUNT(1) AS number_of_order,
+    AVG(total) AS average
+FROM
+    order_detail
+WHERE
+    order_date >= '2011-06-01'
+    AND order_date < '2011-07-01'
+GROUP BY
+    1
+HAVING
+    count(1) >= 2
+ORDER BY
+    3 DESC
+LIMIT
+    10;
+
+#Transaksi besar di Desember 2010
+SELECT
+    name,
+    total ,
+    order_date 
+FROM
+    order_detail
+    INNER JOIN user USING (user_id)
+WHERE
+    order_date >= '2010-12-01'
+    AND order_date < '2011-12-01'
+    AND total >= 1000
+ORDER BY
+    1;
+
+# Produk Terlaris di 2011
+SELECT
+    product_name,
+    SUM(quantity) AS total_quantity,
+    SUM(price) AS total_price
+FROM
+    order_detail
+    INNER JOIN product USING(product_id)
+WHERE
+    order_date >= '2011-01-01'
+GROUP BY
+    1
+ORDER BY
+    2 DESC
+LIMIT
+    5;
+
+# Pelanggan yang Belum Pernah Berbelanja
+SELECT
+    user_id,
+    name,
+    postal_code
+FROM
+    user
+WHERE
+    user_id NOT IN (
+        SELECT
+            user_id
+        FROM
+            order_detail
+    );
+
+# Transaksi Belanja dengan Daftar Belanja lebih dari 2
+SELECT
+    order_id,
+    user_id,
+    name,
+    order_date,
+    COUNT(quantity) AS number_of_detail
+FROM
+    order_detail
+    INNER JOIN user USING(user_id)
+    
+GROUP BY
+    order_id,
+    user_id,
+    name,
+    order_date
+HAVING
+    number_of_detail > 2;
